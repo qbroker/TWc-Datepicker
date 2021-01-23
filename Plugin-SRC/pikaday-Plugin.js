@@ -1,6 +1,6 @@
 /***
 |Name|pikaday-Plugin.js |
-|Version|1.0.1 |
+|Version|1.0.3 |
 |Version library|1.8.2 |
 |Description| |
 |Source|pikaday-Source |
@@ -14,22 +14,37 @@
 !!!Documentation
 <<<
 This plugin provides a datepicker for TWc.
+Localization is only available for the button version.
 <<<
 !!!Usage
 <<<
 {{{
-Invoke with <<pikaday>> for input elements with an id datepicker0 or datepicker1
+Invoke with <<pikaday>> for input elements with an id datepicker0 or datepicker1, this will be removed in the next release
 Invoke with <<pikadayjquery>> for input elements that have the class datepicker
-Invoke with <<pikadayfield buttonname fieldname>> for a button that stores the result in a custom field 
+Invoke with <<pikadayfield "buttonname" "fieldname@tiddlername">> for a button that stores the result in a custom field
+
+If you format like fieldname@tiddlername the date is stored in fieldname of tiddlername, if @ is omited than a fieldname is expected and the date is written to the current tiddler.
+}}}
+{{{
+You can render unicode characters as buttonname, example "&#128198", this gives you an image like: 📆
+}}}
+{{{
+The date output string for the button version can be defined with following tokens:
+YYYY, YY, MMM, mmm, 0MM, MM, DDD, ddd, 0DD, DD
+}}}
+{{{
+The date localization for days, months, years can be set in pikady-Settings
 }}}
 <<<
 !!!Configuration
 <<<
-You can set the styling, number of months and localization here below in the code part. 
-After editing save and reload.
+You can set the styling, number of months and localization here [[pikaday-Settings]]. 
+Make sure that you save and reload after editing.
 <<<
 !!!Revisions
 <<<
+23.01.2021 1.0.3 Moved settings to [[pikaday-Settings]], added save date to specific tiddler, html entities can be used now in button labels
+19.12.2020 1.0.2 Added localization for the pikaday popup, only the months and days, basic token formatting is added
 13.12.2020 1.0.1 Added settings to set localizations, the CSS tiddler is split, the only CSS that is needed for this plugin is [[Pikaday-CSS]]
 04.12.2020 1.0.0 Added pikadayfield macro that provides a button to open the pikaday.js date popup to select a date and store the date in a field
 28.06.2020 0.0.1 Rebuild [[pikaday-Core-Plugin.js]], [[pikaday-jQuery-Plugin.js]] and [[pikaday-Macro-Plugin.js]] into [[pikaday-Plugin.js]]
@@ -81,7 +96,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 }}}
 The MIT License (MIT)
 
-Copyright (c) 2017 - 2020 Okido
+Copyright (c) 2017 - 2021 Okido
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -90,29 +105,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <<<
 !!!Code
 ***/
-//{{{
-/* Pikaday SETTINGS START HERE */
-/* Last updated - 12-11-2020 */
-/* You can edit these settings to style the pikaday popup and stored date */
-
-/* To style the button set the class name here */
-config.options.txtPikadayButtonClass = "button"
-
-/* To set the number of months set the number here, 1 to 4 */
-config.options.txtPikadayNumberMonths = 3
-
-/* To set the localization here */
-config.options.txtPikadayLocalization = "en-US" // Example codes are "en-GB", "en-US", "de-DL", "dl-AT", "es-ES", "ja-JP" etc.
-config.options.txtPikadayLocalizationOptions = { "year": "numeric", "month": "long", "day": "2-digit"}
-
-/* Possible options for localization:
-  "weekday": "narrow", "short", "long"
-  "year": "numeric", "2-digit"
-  "month": "numeric", "2-digit", "narrow", "short", "long"
-  "day": "numeric", "2-digit" */
- 
-/* Pikaday SETTINGS END HERE */
-//}}}
 //{{{
 /* JS CODE STARTS HERE */
 /* Minified with UglifyJS - 01-11-2020 */
@@ -125,13 +117,13 @@ config.options.txtPikadayLocalizationOptions = { "year": "numeric", "month": "lo
 //}}}
 //{{{
 /* JS CODE STARTS HERE */
-/* Minified with UglifyJS - 04-12-2020 */
-config.macros.pikadayjquery={handler:function(e,t,a,Y,r,n){jQuery(".datepicker").pikaday({firstDay:1,showWeekNumber:!0,setDefaultDate:!0,defaultDate:(new Date).formatString("DD-MM-YYYY"),format:"0DD-0MM-YYYY",numberOfMonths:3,toString:(e,t)=>e.formatString("0DD-0MM-YYYY")})}},config.macros.pikaday={handler:function(e,t,a,Y,r,n){new Pikaday({field:document.getElementById("datepicker0"),showWeekNumber:!0,setDefaultDate:!0,defaultDate:(new Date).formatString("DD-MM-YYYY"),format:"0DD-0MM-YYYY",numberOfMonths:3,toString:(e,t)=>e.formatString("0DD-0MM-YYYY")}),new Pikaday({field:document.getElementById("datepicker1"),showWeekNumber:!0,setDefaultDate:!0,defaultDate:(new Date).formatString("DD-MM-YYYY"),format:"0DD-0MM-YYYY",numberOfMonths:3,toString:(e,t)=>e.formatString("0DD-0MM-YYYY")})}};
+/* Minified with UglifyJS - 19-12-2020 */
+config.macros.pikadayjquery={handler:function(e,t,a,n,o,r){const i=config.options;let m=void 0===i.txtPikadayLocalization?(new Intl.NumberFormat).resolvedOptions().locale:i.txtPikadayLocalization;jQuery(".datepicker").pikaday({i18n:{previousMonth:"Previous Month",nextMonth:"Next Month",months:new Array(12).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{month:"long"}).format(new Date(`2021-${t+1}-03`))),weekdays:new Array(7).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{weekday:"long"}).format(new Date(`2021-1-${t+3}`))),weekdaysShort:new Array(7).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{weekday:"short"}).format(new Date(`2021-1-${t+3}`)))},firstDay:1,showWeekNumber:!0,setDefaultDate:!0,defaultDate:(new Date).formatString("DD-MM-YYYY"),format:"0DD-0MM-YYYY",numberOfMonths:3,toString:(e,t)=>e.formatString("0DD-0MM-YYYY")})}},config.macros.pikaday={handler:function(e,t,a,n,o,r){const i=config.options;let m=void 0===i.txtPikadayLocalization?(new Intl.NumberFormat).resolvedOptions().locale:i.txtPikadayLocalization;new Pikaday({i18n:{previousMonth:"Previous Month",nextMonth:"Next Month",months:new Array(12).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{month:"long"}).format(new Date(`2021-${t+1}-03`))),weekdays:new Array(7).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{weekday:"long"}).format(new Date(`2021-1-${t+3}`))),weekdaysShort:new Array(7).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{weekday:"short"}).format(new Date(`2021-1-${t+3}`)))},field:document.getElementById("datepicker0"),showWeekNumber:!0,setDefaultDate:!0,defaultDate:(new Date).formatString("DD-MM-YYYY"),format:"0DD-0MM-YYYY",numberOfMonths:3,toString:(e,t)=>e.formatString("0DD-0MM-YYYY")}),new Pikaday({i18n:{previousMonth:"Previous Month",nextMonth:"Next Month",months:new Array(12).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{month:"long"}).format(new Date(`2021-${t+1}-03`))),weekdays:new Array(7).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{weekday:"long"}).format(new Date(`2021-1-${t+3}`))),weekdaysShort:new Array(7).fill("").map((e,t)=>new Intl.DateTimeFormat(m,{weekday:"short"}).format(new Date(`2021-1-${t+3}`)))},field:document.getElementById("datepicker1"),showWeekNumber:!0,setDefaultDate:!0,defaultDate:(new Date).formatString("DD-MM-YYYY"),format:"0DD-0MM-YYYY",numberOfMonths:3,toString:(e,t)=>e.formatString("0DD-0MM-YYYY")})}};
 /* JS CODE ENDS HERE */
 //}}}
 //{{{
 /* JS CODE STARTS HERE */
-/* Minified with UglifyJS - 13-12-2020 */
-config.macros.pikadayfield={},config.macros.pikadayfield.handler=function(t,o,i,n,e,a){void 0===i[0]&&(i[0]="Undefined"),void 0===i[1]&&(i[1]="undefinedvalue");let d=void 0===config.options.txtPikadayButtonClass?"button":config.options.txtPikadayButtonClass,s=void 0===config.options.txtPikadayNumberMonths?3:config.options.txtPikadayNumberMonths,l=void 0===config.options.txtPikadayLocalization?(new Intl.NumberFormat).resolvedOptions().locale:config.options.txtPikadayLocalization,c=void 0===config.options.txtPikadayLocalizationOptions?{}:config.options.txtPikadayLocalizationOptions;const r=store.getTiddler(story.findContainingTiddler(t).getAttribute("tiddler")).title;let f=r.replace(/\s+/g,"_")+i[0].replace(/\s+/g,"_");createTiddlyButton(t,i[0],"date","",d,f);new Pikaday({field:document.getElementById(f),firstDay:1,setDefaultDate:!1,showWeekNumber:!0,numberOfMonths:s,onSelect:function(){let t=new Intl.DateTimeFormat(l,c).format(this._d);store.setValue(r,i[1],t)}})};
+/* Minified with Terser.js - 23-01-2021 */
+config.macros.pikadayfield={},config.macros.pikadayfield.handler=function(e,t,a,i,n,o){store.tiddlerExists("pikaday-Settings")||displayMessage("Tiddler: pikaday-Settings is missing");const r=config.options;void 0===a[0]&&(a[0]="Undefined"),void 0===a[1]&&(a[1]="undefinedvalue");let d=store.getTiddler(story.findContainingTiddler(e).getAttribute("tiddler")).title,l=a[1];a[1].indexOf("@")>1&&(l=a[1].split("@")[0],d=a[1].split("@")[1]);let s=void 0===r.txtPikadayButtonClass?"button":r.txtPikadayButtonClass,m=void 0===r.txtPikadayNumberMonths?3:r.txtPikadayNumberMonths,c=void 0===r.txtPikadayLocalization?(new Intl.NumberFormat).resolvedOptions().locale:r.txtPikadayLocalization,y=(void 0===r.txtPikadayLocalizationOptions||r.txtPikadayLocalizationOptions,void 0===r.txtPikadayDateFormat?"DD-MM-YYYY":r.txtPikadayDateFormat),g=d.replace(/\s+/g,"_")+a[0].replace(/\s+/g,"_")+jQuery.encoding.digests.hexSha1Str((new Date).toString()).slice(0,5);g=jQuery.encoding.digests.hexSha1Str((new Date).toString()+d+a[0]);let u=createTiddlyButton(e,"","date","",s,g);jQuery(u).html(a[0]);new Pikaday({field:document.getElementById(g),i18n:{previousMonth:"Previous Month",nextMonth:"Next Month",months:new Array(12).fill("").map(((e,t)=>new Intl.DateTimeFormat(c,{month:"long"}).format(new Date(`2021-${t+1}-03`)))),weekdays:new Array(7).fill("").map(((e,t)=>new Intl.DateTimeFormat(c,{weekday:"long"}).format(new Date(`2021-1-${t+3}`)))),weekdaysShort:new Array(7).fill("").map(((e,t)=>new Intl.DateTimeFormat(c,{weekday:"short"}).format(new Date(`2021-1-${t+3}`))))},firstDay:1,setDefaultDate:!1,showWeekNumber:!0,numberOfMonths:m,onSelect:function(){let e=function(e,t,a="en-US"){const i=t=>new Intl.DateTimeFormat(a,t).formatToParts(e)[0].value;return""!==t?t=(t=(t=(t=(t=(t=(t=(t=(t=(t=t.replace(/YYYY/g,i({year:"numeric"}))).replace(/YY/g,i({year:"2-digit"}))).replace(/MMM/g,i({month:"long"}))).replace(/mmm/g,i({month:"short"}))).replace(/0MM/g,i({month:"2-digit"}))).replace(/MM/g,i({month:"numeric"}))).replace(/DDD/g,i({weekday:"long"}))).replace(/ddd/g,i({weekday:"short"}))).replace(/0DD/g,i({day:"2-digit"}))).replace(/DD/g,i({day:"numeric"})):new Intl.DateTimeFormat(a,{year:"numeric",month:"numeric",day:"numeric"}).format(e)}(this._d,y,c);store.setValue(d,l,e)}})};
 /* JS CODE ENDS HERE */
 //}}}

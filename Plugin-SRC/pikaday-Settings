@@ -1,0 +1,31 @@
+//{{{
+/* In this tiddler you find the Pikaday settings */
+/* You can edit these settings to style the Pikaday popup and the stored date format */
+//}}}
+//{{{
+/* Pikaday SETTINGS START HERE */
+/* Last updated 23-01-2021 */
+
+/* To style the button set the css class name here */
+/* For the default TWc style use button */ 
+config.options.txtPikadayButtonClass = "pure-button pure-button-primary pure-u-1-12"
+// config.options.txtPikadayButtonClass = "button"
+
+/* To set the number of months in the popup, value from 1 to 4 */
+config.options.txtPikadayNumberMonths = 3
+
+/* Set the date localization here, examples: "en-GB", "en-US", "de-DL", "de-AT", "es-ES", "ja-JP" etc. */
+config.options.txtPikadayLocalization = "en-US"
+
+/* For date formatting you can use following tokens: YYYY, YY, MMM, mmm, 0MM, MM, DDD, ddd, 0DD, DD */
+config.options.txtPikadayDateFormat = "0DD-0MM-YYYY"
+
+/* Possible options for year, month and date text format:
+  "weekday": "narrow", "short", "long"
+  "year": "numeric", "2-digit"
+  "month": "numeric", "2-digit", "narrow", "short", "long"
+  "day": "numeric", "2-digit"
+*/
+config.options.txtPikadayLocalizationOptions = { "year": "numeric", "month": "long", "day": "2-digit"}
+/* Pikaday SETTINGS END HERE */
+//}}}

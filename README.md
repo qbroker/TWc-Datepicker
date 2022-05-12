@@ -6,11 +6,11 @@ This datepicker has the following functionality:
 * Click a button, pick a date and store it in a tiddler field
 * Use unicode button labels like: 📅
 
-You can try it here: https://nwokido.github.io/TWc-Datepicker/
+You can try it here: https://qbroker.github.io/TWc-Datepicker/
 
 
 Comments are appreciated!!!
 
 If you like this project, give it a star!!!
 
-Have a nice day, Okido
+Have a nice day, qBroker
